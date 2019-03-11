@@ -9,7 +9,6 @@ conda create --name epicPCR multiQC vsearch=2.6.0 fastx_toolkit cutadapt=1.10 pe
 source activate epicPCR
 
 
-
 #Answer y when prompted
 
 #Before starting analysis activate the conda environment

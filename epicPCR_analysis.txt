@@ -191,11 +191,6 @@ rm -f *unassembled*
 
 fastqc *R12.assembled.fastq -o fastqc/.
 
-multiqc fastqc/.*adapter_trimmed.zip -n multiqc_R12.assembled
-
-
-#Run multiQC on all reads
-
 multiqc fastqc/*R12.assembled.zip -n multiqc_R12.assembled
 
 

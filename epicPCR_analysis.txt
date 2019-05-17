@@ -31,14 +31,6 @@ wget https://mothur.org/w/images/3/32/Silva.nr_v132.tgz
 
 tar zxvf Silva.nr_v132.tgz
 
-pwd
-
-POLKU
-
-ls POLKU/tiedosto.align
-
-/wrk/nmi/
-
 
 #Set an environmental variable pointing to the Silva database. You need to change the path to your Silva database folder.
 

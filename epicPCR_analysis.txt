@@ -191,7 +191,7 @@ rm -f *unassembled*
 
 fastqc *R12.assembled.fastq -o fastqc/.
 
-multiqc fastqc/*R12.assembled.zip -n multiqc_R12.assembled
+multiqc fastqc/*R12.assembled_fastqc.zip -n multiqc_R12.assembled
 
 
 #Remove 16S end primer and do quality filtering. You can change the -q option based on the quality of the fastqc

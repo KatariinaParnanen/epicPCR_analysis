@@ -206,7 +206,7 @@ fastqc *12_filtered.pair.fastq -o fastqc/. &>fastqc_out
 ls -ltr *12_filtered.pair.fastq | wc -l
 
 #Transform to fasta
-while read list; do fastq_to_fasta $name_base"12_filtered.pair.fastq"  > $name_base"12_filtered.pair.fasta";done<read_base
+while read name; do fastq_to_fasta $name"12_filtered.pair.fastq"  > $name"12_filtered.pair.fasta";done<read_base
 
 #Make mapping file for renaming
 paste sample_names read_base > name_mapping

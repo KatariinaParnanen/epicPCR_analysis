@@ -159,7 +159,7 @@ fastqc *1_001_adapter_trimmed.fastq -o fastqc/.
 fastqc *2_001_adapter_trimmed.fastq -o fastqc/.
 
 
-multiqc fastqc/.*adapter_trimmed.zip -n multiqc_adapter_trimmed
+multiqc fastqc/*_adapter_trimmed_fastqc.zip -n multiqc_adapter_trimmed
 
 
 multiqc * -n multiqc_all_files

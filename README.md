@@ -117,19 +117,19 @@ printf ">Illum_785R_1_RC\nGGATTAGATACCCNNGTAGTC\n>Illum_785R_2_RC\nGGATTAGATACCC
 ### Make file for primer mapping
 ##### The file should not have a header and the first column has the gene name and the second column should have the nested primer or the outside/forward primer for epic functional gene and the third column the REVERSE COMPLEMENT of the linker or inside primer for epic functional gene.
 
-#### Jenni
+#### Hultman et al., example
 printf "blaOXA\tTCGGTCTAAATGCGTGCCAT\tCTCATACTATGCTCAGCACA\ntetM\tGCAATTCTACTGATTTCTGC\tGCGGAAATTGTAATCAAACA\nqacEdelta\tGTATGCCGCATCTGAGGAAC\tTTTCTTTCTCTGGTTCTGAAATCCAT\nint1\tCGAAGTCGAGGCATTTCTGTC\tTCCTCGGTTTTCTGGAAGGC\n">map.txt
 
-#### Minna
+#### Another example
 printf "blaOXA\tTCGGTCTAAATGCGTGCCAT\tCTCATACTATGCTCAGCACA\ntetM\tGCAATTCTACTGATTTCTGC\tGCGGAAATTGTAATCAAACA\nstrB\tGTATGCCGCATCTGAGGAAC\tGTCAAACTGACTACGTCCAC\n">map.txt
 
 
 ### Make file for sample names
 ##### The simplified sample name file should be in the same order as your sample reads are. You can check this manually after creating the sample_names file.
-#### Jenni
+#### Hultman et al., example
 ls -r *R1_001.fastq | sed 's/A0..-//g' | awk -F '\\-Hultman' '{print $1}' | cut -c-5 | tr '[:lower:]' '[:upper:]' | tr '-' '_' > sample_names
 
-### Minna
+### Another example
 ls -r *R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
 
 
@@ -173,11 +173,11 @@ multiqc * -n multiqc_all_files
 
 ## Assemble reads with pear. This might take a while
 
-#### Jenni
+#### Hultman et al., example
 
 while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" -r $list"2_001.fastq" -o $list"12";done<read_base&>pear_out
 
-#### Minna
+#### Another example
 
 while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" -r $list"2_001_adapter_trimmed.fastq" -o $list"12";done<read_base&>pear_out
 

@@ -59,7 +59,7 @@ export OTU_TRH="0.99"
 
 #########################Pre-analysis#########################
 
-#Before we start analysing we need to obtain some data to work with. We will use the data from Jenni's paper. Downloading files from ENA is a very useful tool for the future too so keep a hold of this script!
+#Before we start analysing we need to obtain some data to work with. We will use the data from Jenni Hultman's paper. Downloading files from ENA is a very useful tool for the future too so keep a hold of this script!
 
 ###Download files from Hultman et al. Epic project PRJEB23695 from ENA#####
 ##################################################################
@@ -99,7 +99,7 @@ gunzip *gz
 
 
 ############################Additional small files########################
-#Next we need to make small files which are needed in the bioinformatic analysis. We need information about the 16S end primers, target gene linker (inside) and nested (outside/forward) primers and the simplified sample names we want to use further on. These are specific for YOUR OWN genes and YOUR OWN samples.
+#Next we need to make small files which are needed in the bioinformatic analysis. We need information about the 16S end primers, target gene linker (inside) and nested (outside/forward) primers and a list of simplified sample names we want to use further on. These are specific for YOUR OWN genes and YOUR OWN samples.
 
 
 #Make file for 16S end primer. The 785R needs to be in REVERSE COMPLEMENT orientation for this to work.
@@ -107,7 +107,7 @@ printf ">Illum_785R_1_RC\nGGATTAGATACCCNNGTAGTC\n>Illum_785R_2_RC\nGGATTAGATACCC
 
 
 
-#Make file for primer mapping. The file should have no header and the first column has the gene name and the second column should have the nested primer or the outside/forward primer for epic functional gene and the third column the REVERSE COMPLEMENT of the linker or inside primer for epic functional gene.
+#Make file for primer mapping. The file should not have a header and the first column has the gene name and the second column should have the nested primer or the outside/forward primer for epic functional gene and the third column the REVERSE COMPLEMENT of the linker or inside primer for epic functional gene.
 
 printf "blaOXA\tTCGGTCTAAATGCGTGCCAT\tCTCATACTATGCTCAGCACA\ntetM\tGCAATTCTACTGATTTCTGC\tGCGGAAATTGTAATCAAACA\nqacEdelta\tGTATGCCGCATCTGAGGAAC\tTTTCTTTCTCTGGTTCTGAAATCCAT\nint1\tCGAAGTCGAGGCATTTCTGTC\tTCCTCGGTTTTCTGGAAGGC\n">map.txt
 
@@ -151,16 +151,14 @@ multiqc fastqc/*.zip -n fastqc/multiqc_rawdata
 #Print list of R1 reads and save the base name "read_base"
 ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 
-#Remove adapter from R1 and R2. (The reverse complement of the 16S (785R) primer adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) is removed from the R2).
+#Remove 3' adapter from R1 and R2. (The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) is removed from the R2) using option -A.
 
 while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
 
 fastqc *1_001_adapter_trimmed.fastq -o fastqc/.
 fastqc *2_001_adapter_trimmed.fastq -o fastqc/.
 
-
 multiqc fastqc/*_adapter_trimmed_fastqc.zip -n multiqc_adapter_trimmed
-
 
 multiqc * -n multiqc_all_files
 
@@ -170,12 +168,9 @@ multiqc * -n multiqc_all_files
 
 #while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" -r $list"2_001.fastq" -o $list"12";done<read_base&>pear_out
 
-
-
 #Minna
 
 while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" -r $list"2_001_adapter_trimmed.fastq" -o $list"12";done<read_base&>pear_out
-
 
 #List number of assembled files
 ls -lt *.assembled.fastq | wc -l
@@ -193,11 +188,10 @@ fastqc *R12.assembled.fastq -o fastqc/.
 
 multiqc fastqc/*R12.assembled_fastqc.zip -n multiqc_R12.assembled
 
-
 #Remove 16S end primer and do quality filtering. You can change the -q option based on the quality of the fastqc
+
 while read name_base; do cutadapt ./$name_base*".assembled.fastq" -a file:785Rprimers.fasta -o $name_base"12_filtered.pair.fastq" --trimmed-only --max-n=5 -q 20 -m $MIN_LEN -M $MAX_LEN;done<read_base &> cutadapt_16S_out
 less cutadapt_out
-
 
 #Check with fastqc
 
@@ -238,13 +232,14 @@ do
 	mkdir -p ${arr[0]}reads
 done < map.txt
 
+###################Split script###################
 
 #Extract reads starting with the forward primer (nested one)
-###################Split script###################
+
 while read i
  do
  arr=($i)
-# Extract reads starting with the target gene forward primer (nested one) F3
+# Extract reads starting with the target gene forward primer (nested one) F3 (-g option)
 cutadapt all_joined_assembled.fasta -g ${arr[1]} \
 -o ${arr[0]}reads/filtered.${arr[0]}.fasta  --trimmed-only \
 -O 10 -e 0.2 &> ${arr[0]}reads/filtered.${arr[0]}.log
@@ -254,19 +249,21 @@ cutadapt all_joined_assembled.fasta -g ${arr[1]} \
 sed "s/>barcodelabel=/>barcodelabel=${arr[0]}_/g" ${arr[0]}reads/filtered.${arr[0]}.fasta > ${arr[0]}reads/filtered.${arr[0]}.renamed.fasta
 
 
-#From the reads which had the target gene primer, take the 16S region using the 16s primer
+#From the reads which had the target gene primer, take the 16S region using the 16s primer 519F used in nested PCR (CAGCMGCCGCGGTAATWC) (-g option)
 cutadapt ${arr[0]}reads/filtered.${arr[0]}.renamed.fasta \
 -g CAGCMGCCGCGGTAATWC -o ${arr[0]}reads/filtered.${arr[0]}.16spart.fasta \
 --trimmed-only -O 15  &>> ${arr[0]}reads/filtered.${arr[0]}.log
 
-#Take the target gene region using the linker primer R1-F2'
+#Take the target gene region using the linker primer R1-F2' 's target gene region
 cutadapt ${arr[0]}reads/filtered.${arr[0]}.renamed.fasta \
 -a ${arr[2]} -o ${arr[0]}reads/filtered.${arr[0]}.${arr[0]}part.fasta \
  --trimmed-only -O 15 &>> ${arr[0]}reads/filtered.${arr[0]}.log  
  done < map.txt
 
 
-##################################################
+#############################################################
+
+OTU clustering is optional. You can also only dereplicate the sequences and remove chimeras and classify all unique non-chimeric reads.
 
 
 ######OTU clustering and making OTU tables using VSEARCH#####
@@ -293,7 +290,8 @@ vsearch --usearch_global all.filtered.16Sparts.fasta  --db 16S_OTUs.fasta --stra
 ##########################################################################################################
 
 
-#Now we are done with creating OTUs and we can classify the OTUs using mothur interactively.
+#Now we are done with creating OTUs and we can classify the OTUs using mothur interactively
+
 ################Classify sequences with mothur###################
 
 mothur "#classify.seqs(fasta=16S_OTUs.fasta, reference=$SILVA_ALN,taxonomy=$SILVA_TAX, cutoff=60, processors=1, probs=F)"

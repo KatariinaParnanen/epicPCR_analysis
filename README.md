@@ -96,7 +96,7 @@ mv -f list_of_files2 list_of_files
 while read file_name; do wget $file_name; done<list_of_files
 
 ### Uncompress. This might take a while
-gunzip *gz 
+gunzip &ast;gz 
 
 ### Check that you have all the files. Compare to the website source if needed.
 

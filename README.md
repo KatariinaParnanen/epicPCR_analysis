@@ -127,10 +127,10 @@ printf "blaOXA\tTCGGTCTAAATGCGTGCCAT\tCTCATACTATGCTCAGCACA\ntetM\tGCAATTCTACTGAT
 ### Make file for sample names
 ##### The simplified sample name file should be in the same order as your sample reads are. You can check this manually after creating the sample_names file.
 #### Hultman et al., example
-ls -r *R1_001.fastq | sed 's/A0..-//g' | awk -F '\\-Hultman' '{print $1}' | cut -c-5 | tr '[:lower:]' '[:upper:]' | tr '-' '_' > sample_names
+ls -r &ast;R1_001.fastq | sed 's/A0..-//g' | awk -F '\\-Hultman' '{print $1}' | cut -c-5 | tr '[:lower:]' '[:upper:]' | tr '-' '_' > sample_names
 
 ### Another example
-ls -r *R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
+ls -r &ast;R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
 
 
 # The actual analysis of epicPCR data
@@ -152,24 +152,24 @@ source activate epicPCR
 
 #### Analyze quality. This might take a while
 mkdir -p fastqc
-fastqc *fastq -o fastqc/.
-multiqc fastqc/*.zip -n fastqc/multiqc_rawdata
+fastqc &ast;fastq -o fastqc/.
+multiqc fastqc/&ast;.zip -n fastqc/multiqc_rawdata
 
 
 #### Print list of R1 reads and save the base name "read_base"
-ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
+ls -tr &ast;R1&ast;fastq | sed 's/1_001.fastq//g' > read_base
 
 ### Remove 3' adapter from R1 and R2.
 ##### (The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) is removed from the R2) using option -A.
 
 while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
 
-fastqc *1_001_adapter_trimmed.fastq -o fastqc/.
-fastqc *2_001_adapter_trimmed.fastq -o fastqc/.
+fastqc &ast;1_001_adapter_trimmed.fastq -o fastqc/.
+fastqc &ast;2_001_adapter_trimmed.fastq -o fastqc/.
 
-multiqc fastqc/*_adapter_trimmed_fastqc.zip -n multiqc_adapter_trimmed
+multiqc fastqc/&ast;_adapter_trimmed_fastqc.zip -n multiqc_adapter_trimmed
 
-multiqc * -n multiqc_all_files
+multiqc &ast; -n multiqc_all_files
 
 ## Assemble reads with pear. This might take a while
 
@@ -182,32 +182,32 @@ while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" -r $list"2_001.fastq
 while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" -r $list"2_001_adapter_trimmed.fastq" -o $list"12";done<read_base&>pear_out
 
 #### List number of assembled files
-ls -lt *.assembled.fastq | wc -l
+ls -lt &ast;.assembled.fastq | wc -l
 
 #### Remove not needed files
-ls *discarded*
+ls &ast;discarded&ast;
 
-rm -f *discarded*
+rm -f &ast;discarded&ast;
 
-rm -f *unassembled*
+rm -f &ast;unassembled&ast;
 
 #### Analyze quality of merged reads. This might take a while
 
-fastqc *R12.assembled.fastq -o fastqc/.
+fastqc &ast;R12.assembled.fastq -o fastqc/.
 
-multiqc fastqc/*R12.assembled_fastqc.zip -n multiqc_R12.assembled
+multiqc fastqc/&ast;R12.assembled_fastqc.zip -n multiqc_R12.assembled
 
 ## Remove 16S end primer and do quality filtering.
 ##### You can change the -q option based on the quality of the fastqc
 
-while read name_base; do cutadapt ./$name_base*".assembled.fastq" -a file:785Rprimers.fasta -o $name_base"12_filtered.pair.fastq" --trimmed-only --max-n=5 -q 20 -m $MIN_LEN -M $MAX_LEN;done<read_base &> cutadapt_16S_out
+while read name_base; do cutadapt ./$name_base&ast;".assembled.fastq" -a file:785Rprimers.fasta -o $name_base"12_filtered.pair.fastq" --trimmed-only --max-n=5 -q 20 -m $MIN_LEN -M $MAX_LEN;done<read_base &> cutadapt_16S_out
 less cutadapt_out
 
 ### Check with fastqc
 
-fastqc *12_filtered.pair.fastq -o fastqc/. &>fastqc_out
+fastqc &ast;12_filtered.pair.fastq -o fastqc/. &>fastqc_out
 
-ls -ltr *12_filtered.pair.fastq | wc -l
+ls -ltr &ast;12_filtered.pair.fastq | wc -l
 
 ### Transform to fasta
 while read name; do fastq_to_fasta -i $name"12_filtered.pair.fastq"  > $name"12_filtered.pair.fasta";done<read_base
@@ -227,11 +227,11 @@ done < name_mapping
 while read i
 do
         arr=($i)
-sed "s/>@*/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta > ${arr[0]}_joined_assembled_renamed.fasta
+sed "s/>@&ast;/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta > ${arr[0]}_joined_assembled_renamed.fasta
 done < sample_names
 
 ### Combine to one file
-cat *_joined_assembled_renamed.fasta > all_joined_assembled.fasta
+cat &ast;_joined_assembled_renamed.fasta > all_joined_assembled.fasta
 
 ## Split the fasta file based on the genes using primer sequences
 
@@ -280,7 +280,7 @@ cutadapt ${arr[0]}reads/filtered.${arr[0]}.renamed.fasta \
 ##### OTU clustering is optional. You can also only dereplicate the sequences and remove chimeras and classify all unique non-chimeric reads.
 
 ### Combine reads
-cat *reads/filtered.*.16spart.fasta > all.filtered.16Sparts.fasta
+cat &ast;reads/filtered.&ast;.16spart.fasta > all.filtered.16Sparts.fasta
 
 
 ### Dereplicate and discard singletons

@@ -205,6 +205,7 @@ multiqc fastqc/&ast;R12.assembled_fastqc.zip -n multiqc_R12.assembled
 ##### You can change the -q option based on the quality of the fastqc
 
 while read name_base; do cutadapt ./$name_base&ast;".assembled.fastq" -a file:785Rprimers.fasta -o $name_base"12_filtered.pair.fastq" --trimmed-only --max-n=5 -q 20 -m $MIN_LEN -M $MAX_LEN;done<read_base &> cutadapt_16S_out
+
 less cutadapt_out
 
 ### Check with fastqc

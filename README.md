@@ -221,7 +221,7 @@ multiqc fastqc/*.zip -n fastqc/multiqc_rawdata
 ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 ```
 
-### Remove 3' adapter from R1 and R2.
+### Remove 3' adapter from R1 and 5' adapter from R2
 ##### (The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed. If you see that R2 has adapters left, change the command so that the parameter for  R2 primer revoval is -A AGATCGGAAGAG
 
 ```

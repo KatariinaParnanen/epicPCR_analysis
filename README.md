@@ -153,6 +153,7 @@ source activate epicPCR
 
 
 #### Analyze quality. This might take a while
+
 mkdir -p fastqc
 
 fastqc &ast;fastq -o fastqc/.
@@ -169,6 +170,8 @@ ls -tr &ast;R1&ast;fastq | sed 's/1_001.fastq//g' > read_base
 while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
 
 fastqc &ast;1_001_adapter_trimmed.fastq -o fastqc/.
+
+
 fastqc &ast;2_001_adapter_trimmed.fastq -o fastqc/.
 
 multiqc fastqc/&ast;_adapter_trimmed_fastqc.zip -n multiqc_adapter_trimmed
@@ -186,9 +189,11 @@ while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" -r $list"2_001.fastq
 while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" -r $list"2_001_adapter_trimmed.fastq" -o $list"12";done<read_base&>pear_out
 
 #### List number of assembled files
+
 ls -lt &ast;.assembled.fastq | wc -l
 
 #### Remove not needed files
+
 ls &ast;discarded&ast;
 
 rm -f &ast;discarded&ast;
@@ -198,6 +203,7 @@ rm -f &ast;unassembled&ast;
 #### Analyze quality of merged reads. This might take a while
 
 fastqc &ast;R12.assembled.fastq -o fastqc/.
+
 
 multiqc fastqc/&ast;R12.assembled_fastqc.zip -n multiqc_R12.assembled
 

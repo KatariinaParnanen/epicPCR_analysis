@@ -45,7 +45,7 @@ tar zxvf Silva.nr_v132.tgz
 
 ```
 
-## Set an environmental variable pointing to the Silva database. You need to change the path to your Silva database folder.
+#### Set an environmental variable pointing to the Silva database. You need to change the path to your Silva database folder.
 
 ```
 export SILVA_TAX="/wrk/YOURUSERNAME/DONOTREMOVE/PATHTOYOURSILVADBFOLDER/YOURSILVA.TAX"
@@ -53,7 +53,7 @@ export SILVA_ALN="/wrk/YOURUSERNAME/DONOTREMOVE/PATHTOYOURSILVADBFOLDER/YOURSILV
 
 ```
 
-## Check that this works! If not you need to set the path again or change the name of your silva align and taxonomy files.
+#### Check that this works! If not you need to set the path again or change the name of your silva align and taxonomy files.
 
 ```
 
@@ -71,7 +71,7 @@ export MAX_LEN="550"
 
 ```
 
-## Set variables for the OTU clustering threshold
+#### Set variables for the OTU clustering threshold
 
 ```
 
@@ -85,7 +85,7 @@ export OTU_TRH="0.99"
 
 #### Before we start analysing we need to obtain some data to work with. We will use the data from Jenni Hultman's paper. Downloading files from ENA is a very useful tool for the future too so keep a hold of this script!
 
-### Download files from Hultman et al. Epic project PRJEB23695 from ENA
+#### Download files from Hultman et al. Epic project PRJEB23695 from ENA
 
 ##################################################################
 
@@ -119,7 +119,7 @@ wget -O list_of_files "https://www.ebi.ac.uk/ena/data/warehouse/filereport?acces
 
 ```
 
-### Modify list so that all samples are in one line
+#### Modify list so that all samples are in one line
 
 ```
 
@@ -135,9 +135,9 @@ gunzip &ast;gz
 
 ```
 
-### Check that you have all the files. Compare to the website source if needed.
+#### Check that you have all the files. Compare to the website source if needed.
 
-### Good! Now you have all the raw data fastq files from Hultman et al. paper.
+#### Good! Now you have all the raw data fastq files from Hultman et al. paper.
 
 
 # Additional small files

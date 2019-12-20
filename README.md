@@ -302,7 +302,7 @@ vsearch --derep_fulllength all.filtered.16Sparts.fasta  --output all.unique.fast
 
 ### Remove chimeras
 
-vsearch --uchime_ref all.unique.fasta  --db $SILVA_ALN --nonchimeras 16S_nochimeras.fasta --uchimeout 16S_uchime.out --threads 2
+vsearch --uchime_denovo all.unique.fasta --nonchimeras 16S_nochimeras.fasta --uchimeout 16S_uchime.out --threads 2
 
 ### Make OTUs using vsearch's --cluster_fast
 vsearch --cluster_fast 16S_nochimeras.fasta --id $OTU_TRH --centroids 16S_OTUs.fasta --relabel OTU --uc 16Sclusters.uc &> clustering_out

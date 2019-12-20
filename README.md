@@ -28,7 +28,7 @@ source deactivate epicPCR
 
 # Adding environmental variables
 
-##### In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% the are most commonly used.
+##### In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% are most commonly used.
 
 
 ## If you don't have a mothur version of the Silva database, download it from mothur website

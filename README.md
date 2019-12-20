@@ -230,17 +230,25 @@ paste sample_names read_base > name_mapping
 
 ### Rename the files
 while read i
+
 do
+
         arr=($i)
+	
          mv -f ${arr[1]}12_filtered.pair.fasta ${arr[0]}_joined_assembled.fasta
+	 
 done < name_mapping
 
 
 ### Rename for OTU table creation
 while read i
+
 do
+
         arr=($i)
+	
 sed "s/>@&ast;/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta > ${arr[0]}_joined_assembled_renamed.fasta
+
 done < sample_names
 
 ### Combine to one file
@@ -250,9 +258,13 @@ cat &ast;_joined_assembled_renamed.fasta > all_joined_assembled.fasta
 
 #### Make folders for all target genes
 while read i
+
 do
+
         arr=($i)
+	
 	mkdir -p ${arr[0]}reads
+	
 done < map.txt
 
 ## Split scrip
@@ -260,7 +272,9 @@ done < map.txt
 ##### Extract reads starting with the forward primer (nested one)
 
 while read i
+
  do
+ 
  arr=($i)
 
 ##### Extract reads starting with the target gene forward primer (nested one) F3 (-g option)

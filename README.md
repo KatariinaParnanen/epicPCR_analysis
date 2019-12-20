@@ -1,4 +1,4 @@
-# epicPCR_analysis
+# epicPCR analysis
 Instructions and examples for how to analyze epicPCR data
 
 ## Prepare bioconda environment for epicPCR analysis

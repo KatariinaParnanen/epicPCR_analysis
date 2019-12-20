@@ -1,7 +1,7 @@
 # epicPCR_analysis
 Instructions and examples for how to analyze epicPCR data
 
-# Prepare bioconda environment for epicPCR analysis
+## Prepare bioconda environment for epicPCR analysis
 ```
 screen -S epicPCR
 
@@ -26,7 +26,7 @@ source activate epicPCR
 source deactivate epicPCR
 
 ```
-# Adding environmental variables
+## Adding environmental variables
 
 ##### In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% are most commonly used.
 
@@ -81,7 +81,7 @@ export OTU_TRH="0.99"
 
 ######################################################################
 
-# Pre-analysis
+## Pre-analysis
 
 #### Before we start analysing we need to obtain some data to work with. We will use the data from Jenni Hultman's paper. Downloading files from ENA is a very useful tool for the future too so keep a hold of this script!
 
@@ -140,7 +140,7 @@ gunzip &ast;gz
 #### Good! Now you have all the raw data fastq files from Hultman et al. paper.
 
 
-# Additional small files
+## Additional small files
 
 ##### Next we need to make small files which are needed in the bioinformatic analysis. We need information about the 16S end primers, target gene linker (inside) and nested (outside/forward) primers and a list of simplified sample names we want to use further on. These are specific for YOUR OWN genes and YOUR OWN samples.
 
@@ -191,7 +191,7 @@ ls -r &ast;R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
 
 ```
 
-# The actual analysis of epicPCR data
+## The actual analysis of epicPCR data
 
 ##### Now that we have the files we need with primer and sample name info and the raw data and our working environment set as we like to we can start the actual analysis.
 

@@ -306,9 +306,7 @@ vsearch --cluster_fast all.unique.fasta --id $OTU_TRH --centroids 16S_OTUs.fasta
 ### Map reads back to OTUs and produce OTU table
 vsearch --usearch_global all.filtered.16Sparts.fasta  --db 16S_OTUs.fasta --strand plus --id $OTU_TRH --uc 16S_OTUtab.uc --otutabout 16S_OTUs.txt &> mapping_out
 
-##########################################################################################################
-##########################################################################################################
-##########################################################################################################
+#####################################################################################################
 
 
 ## Classifying OTUs using mothur

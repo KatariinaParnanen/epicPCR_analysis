@@ -156,7 +156,9 @@ source activate epicPCR
 
 #### Analyze quality. This might take a while
 mkdir -p fastqc
+
 fastqc &ast;fastq -o fastqc/.
+
 multiqc fastqc/&ast;.zip -n fastqc/multiqc_rawdata
 
 

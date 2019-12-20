@@ -300,8 +300,12 @@ cat &ast;reads/filtered.&ast;.16spart.fasta > all.filtered.16Sparts.fasta
 vsearch --derep_fulllength all.filtered.16Sparts.fasta  --output all.unique.fasta --minuniquesize 2 --sizeout &> derep_out
 
 
+### Remove chimeras
+
+vsearch --uchime_ref all.unique.fasta  --db $SILVA_ALN --nonchimeras 16S_nochimeras.fasta --uchimeout 16S_uchime.out --threads 2
+
 ### Make OTUs using vsearch's --cluster_fast
-vsearch --cluster_fast all.unique.fasta --id $OTU_TRH --centroids 16S_OTUs.fasta --relabel OTU --uc 16Sclusters.uc &> clustering_out
+vsearch --cluster_fast 16S_nochimeras.fasta --id $OTU_TRH --centroids 16S_OTUs.fasta --relabel OTU --uc 16Sclusters.uc &> clustering_out
 
 ### Map reads back to OTUs and produce OTU table
 vsearch --usearch_global all.filtered.16Sparts.fasta  --db 16S_OTUs.fasta --strand plus --id $OTU_TRH --uc 16S_OTUtab.uc --otutabout 16S_OTUs.txt &> mapping_out

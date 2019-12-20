@@ -35,7 +35,9 @@ source deactivate epicPCR
 
 
 mkdir SILVA132
+
 cd SILVA132
+
 wget https://mothur.org/w/images/3/32/Silva.nr_v132.tgz
 
 tar zxvf Silva.nr_v132.tgz

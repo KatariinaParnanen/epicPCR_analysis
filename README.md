@@ -145,8 +145,6 @@ ls -r &ast;R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
 
 ### Join and trim files and remove 16S end primer
 
-#!/bin/bash/
-
 ## Epic PCR analysis read pretreatment.
 
 #### Activate bioconda environment

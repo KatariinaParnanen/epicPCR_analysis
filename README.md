@@ -43,14 +43,20 @@ wget https://mothur.org/w/images/3/32/Silva.nr_v132.tgz
 
 tar zxvf Silva.nr_v132.tgz
 
+```
 
 ## Set an environmental variable pointing to the Silva database. You need to change the path to your Silva database folder.
 
+```
 export SILVA_TAX="/wrk/YOURUSERNAME/DONOTREMOVE/PATHTOYOURSILVADBFOLDER/YOURSILVA.TAX"
 export SILVA_ALN="/wrk/YOURUSERNAME/DONOTREMOVE/PATHTOYOURSILVADBFOLDER/YOURSILVA.ALN"
 
+```
 
 ## Check that this works! If not you need to set the path again or change the name of your silva align and taxonomy files.
+
+```
+
 echo $SILVA_TAX
 echo $SILVA_ALN
 
@@ -63,7 +69,11 @@ echo $SILVA_ALN
 export MIN_LEN="350"
 export MAX_LEN="550"
 
+```
+
 ## Set variables for the OTU clustering threshold
+
+```
 
 export OTU_TRH="0.99"
 
@@ -209,9 +219,12 @@ multiqc fastqc/*.zip -n fastqc/multiqc_rawdata
 
 #### Print list of R1 reads and save the base name "read_base"
 ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
+```
 
 ### Remove 3' adapter from R1 and R2.
 ##### (The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed. If you see that R2 has adapters left, change the command so that the parameter for  R2 primer revoval is -A AGATCGGAAGAG
+
+```
 
 while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
 
@@ -301,10 +314,20 @@ ls -ltr *12_filtered.pair.fastq | wc -l
 
 while read name; do fastq_to_fasta $name"12_filtered.pair.fastq"  > $name"12_filtered.pair.fasta";done<read_base
 
+```
+
 ### Make mapping file for renaming
+
+```
+
 paste sample_names read_base > name_mapping
 
+```
+
 ### Rename the files
+
+```
+
 while read i
 
 do
@@ -315,8 +338,12 @@ do
 	 
 done < name_mapping
 
+```
 
 ### Rename for OTU table creation
+
+```
+
 while read i
 
 do
@@ -359,9 +386,11 @@ done < map.txt
 ## Split scrip
 
 
-```
+
 
 ##### Extract reads starting with the forward primer (nested one)
+
+```
 
 while read i
 
@@ -374,6 +403,7 @@ while read i
 cutadapt all_joined_assembled.fasta -g ${arr[1]} \
 -o ${arr[0]}reads/filtered.${arr[0]}.fasta  --trimmed-only \
 -O 10 -e 0.2 &> ${arr[0]}reads/filtered.${arr[0]}.log
+
 
 ##### Add gene name to the sample name
 

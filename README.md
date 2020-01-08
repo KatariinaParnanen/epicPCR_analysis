@@ -292,7 +292,9 @@ multiqc fastqc/*R12.assembled_fastqc.zip -n multiqc_R12.assembled
 
 ```
 
-while read name_base; do cutadapt ./$name_base*".assembled.fastq" -a file:785Rprimers.fasta -o $name_base"12_filtered.pair.fastq" --trimmed-only --max-n=5 -q 20 -m $MIN_LEN -M $MAX_LEN;done<read_base &> cutadapt_16S_out
+while read name_base; do cutadapt ./$name_base*".assembled.fastq" \
+-a file:785Rprimers.fasta -o $name_base"12_filtered.pair.fastq" --trimmed-only \
+--max-n=5 -q 20 -m $MIN_LEN -M $MAX_LEN;done<read_base &> cutadapt_16S_out
 
 less cutadapt_out
 
@@ -312,7 +314,8 @@ ls -ltr *12_filtered.pair.fastq | wc -l
 
 ```
 
-while read name; do fastq_to_fasta $name"12_filtered.pair.fastq"  > $name"12_filtered.pair.fasta";done<read_base
+while read name; do fastq_to_fasta $name"12_filtered.pair.fastq" \
+> $name"12_filtered.pair.fasta";done<read_base
 
 ```
 
@@ -332,9 +335,9 @@ while read i
 
 do
 
-        arr=($i)
+      arr=($i)
 	
-         mv -f ${arr[1]}12_filtered.pair.fasta ${arr[0]}_joined_assembled.fasta
+       mv -f ${arr[1]}12_filtered.pair.fasta ${arr[0]}_joined_assembled.fasta
 	 
 done < name_mapping
 
@@ -350,7 +353,8 @@ do
 
         arr=($i)
 	
-sed "s/>@*/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta > ${arr[0]}_joined_assembled_renamed.fasta
+sed "s/>@*/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta \
+> ${arr[0]}_joined_assembled_renamed.fasta
 
 done < sample_names
 

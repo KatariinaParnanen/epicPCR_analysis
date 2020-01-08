@@ -311,6 +311,7 @@ ls -ltr *12_filtered.pair.fastq | wc -l
 ```
 
 ### Transform to fasta
+#### You might need to define -i and -o options for the fastq_to_fasta command depending on which program is running the fastq_to_fasta command
 
 ```
 

@@ -226,7 +226,10 @@ ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 
 ```
 
-while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
+while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" \
+-a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  \
+-o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" \
+;done<read_base &> cutadapt_out_adapter_trimmed
 
 fastqc *1_001_adapter_trimmed.fastq -o fastqc/.
 
@@ -244,7 +247,8 @@ multiqc * -n multiqc_all_files
 
 ```
 
-while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" -r $list"2_001.fastq" -o $list"12";done<read_base&>pear_out
+while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" \
+-r $list"2_001.fastq" -o $list"12";done<read_base&>pear_out
 
 ```
 
@@ -252,7 +256,8 @@ while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" -r $list"2_001.fastq
 
 ```
 
-while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" -r $list"2_001_adapter_trimmed.fastq" -o $list"12";done<read_base&>pear_out
+while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" \
+-r $list"2_001_adapter_trimmed.fastq" -o $list"12";done<read_base&>pear_out
 
 ```
 

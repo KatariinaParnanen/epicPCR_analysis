@@ -19,7 +19,7 @@ After that you can check which virtual environments are already set up.
 ```
 conda env list
 ```
-And if the project already has `epicPCR` environment, you can activate it and move on the the next part about [environmental variables](## Adding environmental variables).
+And if the project already has `epicPCR` environment, you can activate it and move on the the next part about [environmental variables](#adding-environmental-variables).
 
 If you're not on Puhti or don't have the virtual environment ready, you need to create one.  
 You need to use the `environment.yml` in this repository. So copy it to your home folder on the machine where you want the virtual environment.

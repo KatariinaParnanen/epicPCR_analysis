@@ -2,31 +2,30 @@
 Instructions and examples for how to analyze epicPCR data
 
 ## Prepare bioconda environment for epicPCR analysis
-Make sure that you have conda installed by typing
+Make sure that you have `conda` installed. If you don't have `conda` on your machine, you can get it from [here](https://www.anaconda.com/distribution/).
+
 ```
 conda --version
 ```
-I you're running this on CSC's Puhti supercomputer, you can activate conda by typing:
+
+I you're running this on CSC's Puhti supercomputer, you can activate `conda` with `module load` command.  
+You should also set the project application folder, so that `conda` knows whereto install or look for virtual environments.
 ```
+export PROJAPPL=/projappl/YOURPROJECT
 module load bioconda/3
 ```
 
+After that you can check which virtual environments are already set up.
 ```
-screen -S epicPCR
+conda env list
+```
+And if the project already has `epicPCR` environment, you can activate it and movce on the the next part about [environmental variables](#Adding environmental variables).
 
-sinteractive
+If you're not on Puhti or don't have the virtual environment ready, you need to create one.  
+You need to use the `environment.yml` in this repository. So copy it to your home folder on the machine where you want the virtual environment.
 
-cd $WRKDIR/DONOTREMOVE/
-
-module load bioconda/3
-
-conda create -c bioconda -c conda-forge --name epicPCR multiQC vsearch=2.6.0 fastx_toolkit cutadapt=1.10 pear=0.9.6 mothur=1.40.5 fastqc
-
-### Before starting analysis activate the conda environment
-source activate epicPCR
-
-
-### Answer y when prompted
+```
+conda env create -f environment.yml
 
 ### Before starting analysis activate the conda environment
 source activate epicPCR

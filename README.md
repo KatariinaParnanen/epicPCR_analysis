@@ -238,7 +238,8 @@ multiqc * -n multiqc_all_files
 
 ```
 
-### Assemble reads with pear. This might take a while
+### Assemble reads with pear.
+This might take a while.
 
 __Hultman et al., example__
 
@@ -372,9 +373,7 @@ cat *_joined_assembled_renamed.fasta > all_joined_assembled.fasta
 ```
 
 ## Split the fasta file based on the genes using primer sequences
-
-
-#### Make folders for all target genes
+Make folders for all target genes
 
 ```
 
@@ -390,7 +389,7 @@ done < map.txt
 
 ```
 
-## Split scrip
+### Split scrip
 Extract reads starting with the forward primer (nested one)
 
 ```

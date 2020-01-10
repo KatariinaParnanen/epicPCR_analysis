@@ -2,6 +2,15 @@
 Instructions and examples for how to analyze epicPCR data
 
 ## Prepare bioconda environment for epicPCR analysis
+Make sure that you have conda installed by typing
+```
+conda --version
+```
+I you're running this on CSC's Puhti supercomputer, you can activate conda by typing:
+```
+module load bioconda/3
+```
+
 ```
 screen -S epicPCR
 
@@ -111,7 +120,7 @@ cd myfiles
 ```
 
 ## Download the list of files to download
-##### This is obtained by going to the ENA website and searching with the project id that is available in the article. You can select which fields you want to get in the tabs by clicking. Here we want the submitted file names preserved so we have chosen the submitted_ftp format. 
+##### This is obtained by going to the ENA website and searching with the project id that is available in the article. You can select which fields you want to get in the tabs by clicking. Here we want the submitted file names preserved so we have chosen the submitted_ftp format.
 
 ```
 
@@ -131,7 +140,7 @@ mv -f list_of_files2 list_of_files
 while read file_name; do wget $file_name; done<list_of_files
 
 ### Uncompress. This might take a while
-gunzip &ast;gz 
+gunzip &ast;gz
 
 ```
 
@@ -342,9 +351,9 @@ while read i
 do
 
       arr=($i)
-	
+
        mv -f ${arr[1]}12_filtered.pair.fasta ${arr[0]}_joined_assembled.fasta
-	 
+
 done < name_mapping
 
 ```
@@ -358,7 +367,7 @@ while read i
 do
 
         arr=($i)
-	
+
 sed "s/>@*/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta \
 > ${arr[0]}_joined_assembled_renamed.fasta
 
@@ -386,9 +395,9 @@ while read i
 do
 
         arr=($i)
-	
+
 	mkdir -p ${arr[0]}reads
-	
+
 done < map.txt
 
 ```
@@ -405,7 +414,7 @@ done < map.txt
 while read i
 
  do
- 
+
  arr=($i)
 
 ##### Extract reads starting with the target gene forward primer (nested one) F3 (-g option)
@@ -430,7 +439,7 @@ cutadapt ${arr[0]}reads/filtered.${arr[0]}.renamed.fasta \
 -a ${arr[2]} -o ${arr[0]}reads/filtered.${arr[0]}.${arr[0]}part.fasta \
  --trimmed-only -O 15 &>> ${arr[0]}reads/filtered.${arr[0]}.log  
  done < map.txt
- 
+
  ```
 
 ##############################################################
@@ -484,7 +493,7 @@ sed 's/;/\t/gi' 16S_OTUs.nr_v132.wang.taxonomy > 16S.tax
 
 ```
 
-blastn -subject /wrk/parnanen/DONOTREMOVE/ARG_MGEdatabases/resfinder_FINAL.fa -query filtered.blaOXA.blaOXApart.fasta -outfmt 6 -out blaOXA_blast.out -max_target_seqs 1 
+blastn -subject /wrk/parnanen/DONOTREMOVE/ARG_MGEdatabases/resfinder_FINAL.fa -query filtered.blaOXA.blaOXApart.fasta -outfmt 6 -out blaOXA_blast.out -max_target_seqs 1
 
 blastn -subject /wrk/parnanen/DONOTREMOVE/ARG_MGEdatabases/resfinder_FINAL.fa -query filtered.tetM.tetMpart.fasta -outfmt 6 -out tetM_blast.out -max_target_seqs 1
 

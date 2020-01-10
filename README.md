@@ -11,7 +11,7 @@ cd $WRKDIR/DONOTREMOVE/
 
 module load bioconda/3
 
-conda create -c bioconda --name epicPCR multiQC vsearch=2.6.0 fastx_toolkit cutadapt=1.10 pear=0.9.6 mothur=1.40.5 fastqc
+conda create -c bioconda -c conda-forge --name epicPCR multiQC vsearch=2.6.0 fastx_toolkit cutadapt=1.10 pear=0.9.6 mothur=1.40.5 fastqc
 
 ### Before starting analysis activate the conda environment
 source activate epicPCR

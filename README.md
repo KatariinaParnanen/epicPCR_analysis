@@ -22,7 +22,7 @@ conda env list
 And if the project already has `epicPCR` environment, you can activate it and move on the the next part about [environmental variables](#adding-environmental-variables).
 
 If you're not on Puhti or don't have the virtual environment ready, you need to create one.  
-You need to use the `environment.yml` in this repository. So copy it to your home folder on the machine where you want the virtual environment.
+The `environment.yml` in this repository has the instructions for `conda`to create it. Copy it to your home folder on the machine where you want the virtual environment.
 
 ```
 conda env create -f environment.yml
@@ -34,9 +34,10 @@ source activate epicPCR
 source deactivate epicPCR
 
 ```
+
 ## Adding environmental variables
 
-##### In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% are most commonly used.
+__In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% are most commonly used.__
 
 ```
 

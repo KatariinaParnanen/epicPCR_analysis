@@ -2,33 +2,42 @@
 Instructions and examples for how to analyze epicPCR data
 
 ## Prepare bioconda environment for epicPCR analysis
+Make sure that you have `conda` installed. If you don't have `conda` on your machine, you can get it from [here](https://www.anaconda.com/distribution/).
+
 ```
-screen -S epicPCR
+conda --version
+```
 
-sinteractive
-
-cd $WRKDIR/DONOTREMOVE/
-
+I you're running this on CSC's Puhti supercomputer, you can activate `conda` with `module load` command.  
+You should also set the project application folder, so that `conda` knows where to install or look for virtual environments.
+```
+export PROJAPPL=/projappl/YOURPROJECT
 module load bioconda/3
+```
 
-conda create -c bioconda -c conda-forge --name epicPCR multiQC vsearch=2.6.0 fastx_toolkit cutadapt=1.10 pear=0.9.6 mothur=1.40.5 fastqc
+After that you can check which virtual environments are already set up.
+```
+conda env list
+```
+And if the project already has `epicPCR` environment, you can activate it and move on the the next part about [environmental variables](#adding-environmental-variables).
+
+If you're not on Puhti or don't have the virtual environment ready, you need to create one.  
+The `environment.yml` in this repository has the instructions for `conda`to create it. Copy it to your home folder on the machine where you want the virtual environment.
+
+```
+conda env create -f environment.yml
 
 ### Before starting analysis activate the conda environment
-source activate epicPCR
-
-
-### Answer y when prompted
-
-### Before starting analysis activate the conda environment
-source activate epicPCR
+conda activate epicPCR
 
 ### You can deactivate the environment like this
-source deactivate epicPCR
+conda deactivate
 
 ```
+
 ## Adding environmental variables
 
-##### In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% are most commonly used.
+In addition to the bioinformatic programs we need to define some environmental variables which will make the analysis with the master script automatic. We need to tell the script where your SILVA database of SSUs is located and also what minimum and maximum length you want to use for trimming your reads. It is good to have a rather broad size range if you have several genes in your dataset. We also need to define the wanted threshold for clustering OTUs. 97% and 99% are most commonly used.
 
 ```
 
@@ -45,15 +54,15 @@ tar zxvf Silva.nr_v132.tgz
 
 ```
 
-#### Set an environmental variable pointing to the Silva database. You need to change the path to your Silva database folder.
+Set an environmental variable pointing to the Silva database. You need to change the path to your Silva database folder.
 
 ```
-export SILVA_TAX="/wrk/YOURUSERNAME/DONOTREMOVE/PATHTOYOURSILVADBFOLDER/YOURSILVA.TAX"
-export SILVA_ALN="/wrk/YOURUSERNAME/DONOTREMOVE/PATHTOYOURSILVADBFOLDER/YOURSILVA.ALN"
+export SILVA_TAX="PATHTOYOURSILVADBFOLDER/YOURSILVA.TAX"
+export SILVA_ALN="PATHTOYOURSILVADBFOLDER/YOURSILVA.ALN"
 
 ```
 
-#### Check that this works! If not you need to set the path again or change the name of your silva align and taxonomy files.
+Check that this works! If not you need to set the path again or change the name of your silva align and taxonomy files.
 
 ```
 
@@ -62,7 +71,7 @@ echo $SILVA_ALN
 
 ```
 
-#### Set variables for the minimum and maximum length of epicpCR products. This is dependent on YOUR OWN product lengths. Note that you might need to change these after you have done the analysis and looked at results. You can also filter out long and short sequences later so you don't need to set these too strict in the beginning.
+Set variables for the minimum and maximum length of epicpCR products. This is dependent on YOUR OWN product lengths. Note that you might need to change these after you have done the analysis and looked at results. You can also filter out long and short sequences later so you don't need to set these too strict in the beginning.
 
 ```
 
@@ -71,7 +80,7 @@ export MAX_LEN="550"
 
 ```
 
-#### Set variables for the OTU clustering threshold
+Set variables for the OTU clustering threshold
 
 ```
 
@@ -79,39 +88,26 @@ export OTU_TRH="0.99"
 
 ```
 
-##############################################################
-
 ## Pre-analysis
 
-#### Before we start analysing we need to obtain some data to work with. We will use the data from Jenni Hultman's paper. Downloading files from ENA is a very useful tool for the future too so keep a hold of this script!
+Before we start analysing we need to obtain some data to work with. We will use the data from Jenni Hultman's paper. Downloading files from ENA is a very useful tool for the future too so keep a hold of this script!
 
-#### Download files from Hultman et al. Epic project PRJEB23695 from ENA
+Download files from Hultman _et al._ (2018) epicPCR study PRJEB23695 from ENA.
 
-##############################################################
-
+If you're on CSC's computer, open a screen, since this might take a while and you might want to log out and go home for example.  
+Also when on Puhti, store your data on the scracth folder and backup things to Allas.
 ```
-
-### Open screen on taito
 screen -S epic
 
-### Log into interactive node
-sinteractive
-
-### Go to your DONOTREMOVE folder
-
-cd $WRKDIR/DONOTREMOVE/
-
-### Make directory myfiles
+# Make directory myfiles
 mkdir myfiles
 
-### Go to your directory myfiles
+# Go to your directory myfiles
 cd myfiles
 
-
 ```
-
-## Download the list of files to download
-##### This is obtained by going to the ENA website and searching with the project id that is available in the article. You can select which fields you want to get in the tabs by clicking. Here we want the submitted file names preserved so we have chosen the submitted_ftp format. 
+Download the list of files to download
+This is obtained by going to the ENA website and searching with the project id that is available in the article. You can select which fields you want to get in the tabs by clicking. Here we want the submitted file names preserved so we have chosen the submitted_ftp format.
 
 ```
 
@@ -119,34 +115,33 @@ wget -O list_of_files "https://www.ebi.ac.uk/ena/data/warehouse/filereport?acces
 
 ```
 
-#### Modify list so that all samples are in one line
+Modify list so that all samples are in one line
 
 ```
 
 tr ';' '\n' < list_of_files > list_of_files2
 
 mv -f list_of_files2 list_of_files
-
-### Download files. This might take a while
+```
+Download the files and unpack. This might take a while.
+```
 while read file_name; do wget $file_name; done<list_of_files
 
-### Uncompress. This might take a while
-gunzip &ast;gz 
-
+gunzip &ast;gz
 ```
 
-#### Check that you have all the files. Compare to the website source if needed.
+Check that you have all the files. Compare to the website source if needed.
 
-#### Good! Now you have all the raw data fastq files from Hultman et al. paper.
+Good! Now you have all the raw data fastq files from Hultman _et al._ paper.
 
 
 ## Additional small files
 
-##### Next we need to make small files which are needed in the bioinformatic analysis. We need information about the 16S end primers, target gene linker (inside) and nested (outside/forward) primers and a list of simplified sample names we want to use further on. These are specific for YOUR OWN genes and YOUR OWN samples.
+Next we need to make small files which are needed in the bioinformatic analysis. We need information about the 16S end primers, target gene linker (inside) and nested (outside/forward) primers and a list of simplified sample names we want to use further on. These are specific for YOUR OWN genes and YOUR OWN samples.
 
 
 ### Make file for 16S end primer
-##### The 785R needs to be in REVERSE COMPLEMENT orientation for this to work.
+The 785R needs to be in REVERSE COMPLEMENT orientation for this to work.
 
 ```
 
@@ -155,9 +150,9 @@ printf ">Illum_785R_1_RC\nGGATTAGATACCCNNGTAGTC\n>Illum_785R_2_RC\nGGATTAGATACCC
 ```
 
 ### Make file for primer mapping
-##### The file should not have a header and the first column has the gene name and the second column should have the nested primer or the outside/forward primer for epic functional gene and the third column the REVERSE COMPLEMENT of the linker or inside primer for epic functional gene.
+The file should not have a header and the first column has the gene name and the second column should have the nested primer or the outside/forward primer for epic functional gene and the third column the REVERSE COMPLEMENT of the linker or inside primer for epic functional gene.
 
-#### Hultman et al., example
+__Hultman et al., example__
 
 ```
 
@@ -165,7 +160,7 @@ printf "blaOXA\tTCGGTCTAAATGCGTGCCAT\tCTCATACTATGCTCAGCACA\ntetM\tGCAATTCTACTGAT
 
 ```
 
-#### Another example
+__Another example__
 
 ```
 
@@ -174,8 +169,9 @@ printf "blaOXA\tTCGGTCTAAATGCGTGCCAT\tCTCATACTATGCTCAGCACA\ntetM\tGCAATTCTACTGAT
 ```
 
 ### Make file for sample names
-##### The simplified sample name file should be in the same order as your sample reads are. You can check this manually after creating the sample_names file.
-#### Hultman et al., example
+The simplified sample name file should be in the same order as your sample reads are. You can check this manually after creating the sample_names file.
+
+__Hultman et al., example__
 
 ```
 
@@ -183,7 +179,7 @@ ls -r &ast;R1_001.fastq | sed 's/A0..-//g' | awk -F '\\-Hultman' '{print $1}' | 
 
 ```
 
-### Another example
+__Another example__
 
 ```
 
@@ -193,36 +189,37 @@ ls -r &ast;R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
 
 ## The actual analysis of epicPCR data
 
-##### Now that we have the files we need with primer and sample name info and the raw data and our working environment set as we like to we can start the actual analysis.
+Now that we have the files we need with primer and sample name info and the raw data and our working environment set as we like to we can start the actual analysis.
 
-##### Remember to do this interactively in screen or as a batch job so you don't loose your work if your connection breaks.
+Remember to do this interactively in screen or as a batch job so you don't loose your work if your connection breaks.
 
-### Join and trim files and remove 16S end primer
+### Epic PCR analysis read pre-treatment.
 
-## Epic PCR analysis read pretreatment.
+Activate bioconda environment
 
 ```
-
-#### Activate bioconda environment
 module load bioconda/3
-source activate epicPCR
+conda activate epicPCR
+```
 
+Analyze quality. This might take a while
 
-#### Analyze quality. This might take a while
-
+```
 mkdir -p fastqc
 
 fastqc *fastq -o fastqc/.
 
 multiqc fastqc/*.zip -n fastqc/multiqc_rawdata
+```
 
+Print list of R1 reads and save the base name "read_base"
 
-#### Print list of R1 reads and save the base name "read_base"
+```
 ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 ```
 
 ### Remove 3' adapter from R1 and 5' adapter from R2
-##### (The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed. If you see that R2 has adapters left, change the command so that the parameter for  R2 primer revoval is -A AGATCGGAAGAG
+(The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed. If you see that R2 has adapters left, change the command so that the parameter for  R2 primer revoval is -A AGATCGGAAGAG
 
 ```
 
@@ -241,9 +238,10 @@ multiqc * -n multiqc_all_files
 
 ```
 
-## Assemble reads with pear. This might take a while
+### Assemble reads with pear.
+This might take a while.
 
-#### Hultman et al., example
+__Hultman et al., example__
 
 ```
 
@@ -252,7 +250,7 @@ while read list; do pear -y 150M -j 8 -f $list"1_001.fastq" \
 
 ```
 
-#### Another example
+__Another example__
 
 ```
 
@@ -261,7 +259,7 @@ while read list; do pear -y 150M -j 8 -f $list"1_001_adapter_trimmed.fastq" \
 
 ```
 
-#### List number of assembled files
+List number of assembled files
 
 ```
 
@@ -269,7 +267,7 @@ ls -lt *.assembled.fastq | wc -l
 
 ```
 
-#### Remove not needed files
+Remove not needed files
 
 ```
 
@@ -281,7 +279,7 @@ rm -f *unassembled*
 
 ```
 
-#### Analyze quality of merged reads. This might take a while
+Analyze quality of merged reads. This might take a while.
 
 ```
 
@@ -292,8 +290,8 @@ multiqc fastqc/*R12.assembled_fastqc.zip -n multiqc_R12.assembled
 
 ```
 
-## Remove 16S end primer and do quality filtering.
-##### You can change the -q option based on the quality of the fastqc
+### Remove 16S end primer and do quality filtering.
+You can change the -q option based on the quality of the fastqc
 
 ```
 
@@ -316,7 +314,7 @@ ls -ltr *12_filtered.pair.fastq | wc -l
 ```
 
 ### Transform to fasta
-#### You might need to define -i and -o options for the fastq_to_fasta command depending on which program is running the fastq_to_fasta command
+You might need to define -i and -o options for the fastq_to_fasta command depending on which program is running the fastq_to_fasta command
 
 ```
 
@@ -342,9 +340,9 @@ while read i
 do
 
       arr=($i)
-	
+
        mv -f ${arr[1]}12_filtered.pair.fasta ${arr[0]}_joined_assembled.fasta
-	 
+
 done < name_mapping
 
 ```
@@ -358,7 +356,7 @@ while read i
 do
 
         arr=($i)
-	
+
 sed "s/>@*/>barcodelabel=${arr[0]};read=/g"  ${arr[0]}_joined_assembled.fasta \
 > ${arr[0]}_joined_assembled_renamed.fasta
 
@@ -375,9 +373,7 @@ cat *_joined_assembled_renamed.fasta > all_joined_assembled.fasta
 ```
 
 ## Split the fasta file based on the genes using primer sequences
-
-
-#### Make folders for all target genes
+Make folders for all target genes
 
 ```
 
@@ -386,26 +382,22 @@ while read i
 do
 
         arr=($i)
-	
+
 	mkdir -p ${arr[0]}reads
-	
+
 done < map.txt
 
 ```
 
-## Split scrip
-
-
-
-
-##### Extract reads starting with the forward primer (nested one)
+### Split scrip
+Extract reads starting with the forward primer (nested one)
 
 ```
 
 while read i
 
  do
- 
+
  arr=($i)
 
 ##### Extract reads starting with the target gene forward primer (nested one) F3 (-g option)
@@ -430,15 +422,11 @@ cutadapt ${arr[0]}reads/filtered.${arr[0]}.renamed.fasta \
 -a ${arr[2]} -o ${arr[0]}reads/filtered.${arr[0]}.${arr[0]}part.fasta \
  --trimmed-only -O 15 &>> ${arr[0]}reads/filtered.${arr[0]}.log  
  done < map.txt
- 
+
  ```
 
-##############################################################
-
-
 ## OTU clustering and making OTU tables using VSEARCH
-
-##### OTU clustering is optional. You can also only dereplicate the sequences and remove chimeras and classify all unique non-chimeric reads.
+OTU clustering is optional. You can also only dereplicate the sequences and remove chimeras and classify all unique non-chimeric reads.
 
 ```
 
@@ -463,9 +451,6 @@ vsearch --usearch_global all.filtered.16Sparts.fasta  --db 16S_OTUs.fasta --stra
 ```
 
 
-##############################################################
-
-
 ## Classifying OTUs using mothur
 
 ```
@@ -478,13 +463,13 @@ sed 's/;/\t/gi' 16S_OTUs.nr_v132.wang.taxonomy > 16S.tax
 ```
 
 ## Optional
-##### Check the resistance gene against a database for example by blast
+Check the resistance gene against a database for example by blast
 
 ### Download resfinder and run blast
 
 ```
 
-blastn -subject /wrk/parnanen/DONOTREMOVE/ARG_MGEdatabases/resfinder_FINAL.fa -query filtered.blaOXA.blaOXApart.fasta -outfmt 6 -out blaOXA_blast.out -max_target_seqs 1 
+blastn -subject /wrk/parnanen/DONOTREMOVE/ARG_MGEdatabases/resfinder_FINAL.fa -query filtered.blaOXA.blaOXApart.fasta -outfmt 6 -out blaOXA_blast.out -max_target_seqs 1
 
 blastn -subject /wrk/parnanen/DONOTREMOVE/ARG_MGEdatabases/resfinder_FINAL.fa -query filtered.tetM.tetMpart.fasta -outfmt 6 -out tetM_blast.out -max_target_seqs 1
 

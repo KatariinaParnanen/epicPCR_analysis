@@ -153,7 +153,7 @@ ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 
 #Remove 3' adapter from R1 and R2. (The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) is removed from the R2) using option -A.
 
-while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
+while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" -a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGAT  -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" ;done<read_base &> cutadapt_out_adapter_trimmed
 
 fastqc *1_001_adapter_trimmed.fastq -o fastqc/.
 fastqc *2_001_adapter_trimmed.fastq -o fastqc/.

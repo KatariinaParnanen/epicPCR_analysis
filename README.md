@@ -219,12 +219,12 @@ ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 ```
 
 ### Remove 3' adapter from R1 and 5' adapter from R2
-(The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed, like in this case it seems to work better for the R2 reads. If need to use the longer format, change the command so that the parameter for  R2 primer revoval is -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
+(The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A might be needed. If need to use the shoter format, change the command so that the parameter for  R2 primer revoval is -A AGATCGGAAGAG
 
 ```
 
 while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" \
--a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A AGATCGGAAGAG  \
+-a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGAT  \
 -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" \
 ;done<read_base &> cutadapt_out_adapter_trimmed
 

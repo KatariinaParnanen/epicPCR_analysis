@@ -175,7 +175,7 @@ __Hultman et al., example__
 
 ```
 
-ls -r &ast;R1_001.fastq | sed 's/A0..-//g' | awk -F '\\-Hultman' '{print $1}' | cut -c-5 | tr '[:lower:]' '[:upper:]' | tr '-' '_' > sample_names
+ls -r *R1_001.fastq | sed 's/A0..-//g' | awk -F '\\-Hultman' '{print $1}' | cut -c-5 | tr '[:lower:]' '[:upper:]' | tr '-' '_' > sample_names
 
 ```
 
@@ -183,7 +183,7 @@ __Another example__
 
 ```
 
-ls -r &ast;R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
+ls -r *R1_001.fastq | awk -F '-' '{print $1 "_" $2 "_" $3}' > sample_names
 
 ```
 
@@ -219,12 +219,12 @@ ls -tr *R1*fastq | sed 's/1_001.fastq//g' > read_base
 ```
 
 ### Remove 3' adapter from R1 and 5' adapter from R2
-(The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed. If you see that R2 has adapters left, change the command so that the parameter for  R2 primer revoval is -A AGATCGGAAGAG
+(The reverse complement of the 16S (785R) primer's adapter is removed from R1 using option -a and the reverse complement of the ARG primer (F3) adapter is removed from the R2 using option -A. Make sure to check that you don't have any adapter sequences left from the multiqc report. Sometimes using a shorter universal Illumina adapter sequence in -A is needed, like in this case it seems to work better for the R2 reads. If need to use the longer format, change the command so that the parameter for  R2 primer revoval is -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
 
 ```
 
 while read list; do cutadapt ./$list"1_001.fastq" ./$list"2_001.fastq" \
--a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A ATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT  \
+-a  AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC -A AGATCGGAAGAG  \
 -o ./$list"1_001_adapter_trimmed.fastq" -p $list"2_001_adapter_trimmed.fastq" \
 ;done<read_base &> cutadapt_out_adapter_trimmed
 
@@ -390,7 +390,12 @@ done < map.txt
 ```
 
 ### Split scrip
-Extract reads starting with the forward primer (nested one)
+Extract reads starting with the forward primer (nested one). 
+
+NOTE!!!
+This script is written for a protocol in which all the PCR products from different genes are pooled together for sequencing.
+
+If you are NOT pooling the different genes, add an extra step where you check for any crosscontamination between the genes after this step. This means that you see products from a tetM PCR in your blaOXA folder for example. You can trace this from the you sample names which should have the gene name for the PCR in them, so all reads with sample names that don't have the gene name are false positives. You can remove these from the library for example by using an inverted grep command (grep -v).
 
 ```
 
